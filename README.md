@@ -48,7 +48,7 @@ $mysql->execute($sql_update);
 ```
 
 ### Schema
-For this example a schema should looke like this.
+For this example a schema should look like this.
 ```
 tables:
   _table_name_:
