@@ -14,8 +14,14 @@ class PluginMysqlBuilder{
   }
   private function get_schema_data(){
     $data = new PluginWfYml($this->schema);
+    if(sizeof($data->get())==0){
+      throw new Exception('PluginMysqlBuilder says: Could not find data in schema '.$this->schema.'.');
+    }
     $field = $data->get('tables/'.$this->table.'/field');
-    if($data->get('extra/field')){
+    if(!is_array($field)){
+      throw new Exception('PluginMysqlBuilder says: Could not find fields for table '.$this->table.' in schema '.$this->schema.'.');
+    }
+    if($data->get('extra/field') && is_array($field)){
       $field = array_merge($field, $data->get('extra/field'));
     }
     return $field;
@@ -68,7 +74,9 @@ class PluginMysqlBuilder{
     $sql->set('params', array_merge($fields_params, $where_params));
     return $sql->get();
   }
-  public function get_sql_select($data){
+  public function get_sql_select($criteria = array()){
+    $criteria = new PluginWfArray($criteria);
+    $criteria_where = $criteria->get('where');
     $schema = $this->get_schema_data();
     $sql = new PluginWfArray();
     $fields = '';
@@ -83,13 +91,17 @@ class PluginMysqlBuilder{
     }
     foreach ($schema as $key => $value) {
       $i = new PluginWfArray($value);
-      if(isset($data[$key])){
+      if(isset($criteria_where[$key])){
         $where .= "$key=? and ";
-        $params[] = array('type' => $value['type'], 'value' => $data[$key]);
+        $params[] = array('type' => $value['type'], 'value' => $criteria_where[$key]);
       }
     }
     $str = str_replace('[fields]', substr($fields, 0, strlen($fields)-1), $str);
-    $str = str_replace('1=1', substr($where, 0, strlen($where)-5), $str);
+    if($where){
+      $str = str_replace('1=1', substr($where, 0, strlen($where)-5), $str);
+    }else{
+      $str = str_replace('where 1=1', '', $str);
+    }
     $sql->set('sql', $str);
     $sql->set('params', $params);
     $sql->set('select', $select);
