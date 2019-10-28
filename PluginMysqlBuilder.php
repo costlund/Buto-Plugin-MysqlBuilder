@@ -14,7 +14,7 @@ class PluginMysqlBuilder{
   }
   public function set_schema_file($schema_file){
     $this->schema_file = $schema_file;
-    $this->schema_data = new PluginWfYml($this->schema_file);
+    $this->schema_data = new PluginWfYml(wfGlobals::getAppDir().$this->schema_file);
     if(sizeof($this->schema_data->get())==0){
       throw new Exception('PluginMysqlBuilder says: Could not find data in schema '.$this->schema_file.'.');
     }
