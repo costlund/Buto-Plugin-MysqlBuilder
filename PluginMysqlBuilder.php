@@ -30,6 +30,11 @@ class PluginMysqlBuilder{
       if(sizeof($temp->get())==0){
         throw new Exception('PluginMysqlBuilder says: Could not find data in schema '.$value.'.');
       }
+      if($temp->get('extra/field')){
+        foreach ($temp->get('tables') as $key => $value) {
+          $temp->set("tables/$key/field", array_merge($temp->get("tables/$key/field"), $temp->get('extra/field')));
+        }
+      }
       $tables = array_merge($tables, $temp->get('tables'));
     }
     /**
