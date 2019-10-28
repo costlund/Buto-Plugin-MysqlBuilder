@@ -13,11 +13,32 @@ class PluginMysqlBuilder{
     wfPlugin::includeonce('wf/yml');
   }
   public function set_schema_file($schema_file){
-    $this->schema_file = $schema_file;
-    $this->schema_data = new PluginWfYml(wfGlobals::getAppDir().$this->schema_file);
-    if(sizeof($this->schema_data->get())==0){
-      throw new Exception('PluginMysqlBuilder says: Could not find data in schema '.$this->schema_file.'.');
+    /**
+     * Handle input.
+     */
+    if(!is_array($schema_file)){
+      $this->schema_file = array($schema_file);
+    }else{
+      $this->schema_file = $schema_file;
     }
+    /**
+     * Read data files and merge.
+     */
+    $tables = array();
+    foreach ($this->schema_file as $key => $value) {
+      $temp = new PluginWfYml(wfGlobals::getAppDir().$value);
+      if(sizeof($temp->get())==0){
+        throw new Exception('PluginMysqlBuilder says: Could not find data in schema '.$value.'.');
+      }
+      $tables = array_merge($tables, $temp->get('tables'));
+    }
+    /**
+     * Set schema data.
+     */
+    $this->schema_data = new PluginWfArray(array('tables' => $tables));
+    /**
+     * 
+     */
     return $this->schema_data;
   }
   public function set_table_name($table_name, $table_name_as = null){
@@ -25,7 +46,7 @@ class PluginMysqlBuilder{
     $this->table_name_as = $table_name_as;
     $this->table_data = new PluginWfArray($this->schema_data->get('tables/'.$this->table_name));
     if(!is_array($this->table_data->get())){
-      throw new Exception('PluginMysqlBuilder says: Could not find fields for table '.$this->table_name.' in schema '.$this->schema_file.'.');
+      throw new Exception('PluginMysqlBuilder says: Could not find fields for table '.$this->table_name.' in schema.');
     }
     if($this->schema_data->get('extra/field') && is_array($this->table_data->get('field'))){
       $this->table_data->set('field', array_merge($this->table_data->get('field'), $this->schema_data->get('extra/field')));
@@ -197,11 +218,13 @@ class PluginMysqlBuilder{
      */
     $criteria_where = $criteria->get('where');
     $where = null;
-    foreach ($criteria_where as $key => $value){
-      $x = explode('.', $key);
-      $temp = new PluginWfArray($this->schema_data->get('tables/'.$x[0].'/field/'.$x[1]  ));
-      $where .= "$key = ? and ";
-      $params[] = array('type' => $temp->get('type'), 'value' => $value['value']);
+    if($criteria_where){
+      foreach ($criteria_where as $key => $value){
+        $x = explode('.', $key);
+        $temp = new PluginWfArray($this->schema_data->get('tables/'.$x[0].'/field/'.$x[1]  ));
+        $where .= "$key = ? and ";
+        $params[] = array('type' => $temp->get('type'), 'value' => $value['value']);
+      }
     }
     /**
      * Replace
