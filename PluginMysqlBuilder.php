@@ -84,6 +84,9 @@ class PluginMysqlBuilder{
      * 
      */
     if($data->get('table_name_join_as')){
+      /**
+       * 
+       */
       $data->set('table_name', $data->get('table_name_join_as'));
     }
     /**
@@ -92,6 +95,13 @@ class PluginMysqlBuilder{
     if(!$data->get('table_name_as')){
       $this->join .= 'left join '.$foreign_key->get('reference_table').' on '.$data->get('table_name').'.'.$data->get('field').'='.$foreign_key->get('reference_table').'.'.$foreign_key->get('reference_field').' ';
     }else{
+      /**
+       * Add to schema.
+       */
+      $this->add_to_schema($data->get('table_name_as'), $foreign_key->get('reference_table'));
+      /**
+       * 
+       */
       $this->join .= 'left join '.$foreign_key->get('reference_table').' as '.$data->get('table_name_as').' on '.$data->get('table_name').'.'.$data->get('field').'='.$data->get('table_name_as').'.'.$foreign_key->get('reference_field').' ';
     }
     return null;
@@ -112,6 +122,13 @@ class PluginMysqlBuilder{
     }
     return null;
   }
+  private function add_to_schema($table_name_as, $table_name){
+    /**
+     * Add to schema.
+     */
+    $this->schema_data->set('tables/'.$table_name_as, $this->schema_data->get('tables/'.$table_name));
+    return null;
+  }
   public function get_sql_select($criteria = array()){
     $criteria = new PluginWfArray($criteria);
     $sql = new PluginWfArray();
@@ -121,6 +138,13 @@ class PluginMysqlBuilder{
     if(!$this->table_name_as){
       $str = 'select [fields] from '.$this->table_name.' [join] where 1=1;';
     }else{
+      /**
+       * Add to schema.
+       */
+      $this->add_to_schema($this->table_name_as, $this->table_name);
+      /**
+       * 
+       */
       $str = 'select [fields] from '.$this->table_name.' as '.$this->table_name_as.' [join] where 1=1;';
     }
     /**
@@ -173,12 +197,11 @@ class PluginMysqlBuilder{
      */
     $criteria_where = $criteria->get('where');
     $where = null;
-    foreach ($this->table_data->get('field') as $key => $value) {
-      $i = new PluginWfArray($value);
-      if(isset($criteria_where[$key])){
-        $where .= $this->table_name.".$key=? and ";
-        $params[] = array('type' => $value['type'], 'value' => $criteria_where[$key]);
-      }
+    foreach ($criteria_where as $key => $value){
+      $x = explode('.', $key);
+      $temp = new PluginWfArray($this->schema_data->get('tables/'.$x[0].'/field/'.$x[1]  ));
+      $where .= "$key = ? and ";
+      $params[] = array('type' => $temp->get('type'), 'value' => $value['value']);
     }
     /**
      * Replace
