@@ -162,7 +162,7 @@ class PluginMysqlBuilder{
     $params = array();
     $this->select = array();
     if(!$this->table_name_as){
-      $str = 'select [fields] from '.$this->table_name.' [join] where 1=1;';
+      $str = 'select [fields] from '.$this->table_name.' [join] where 1=1 [order_by];';
     }else{
       /**
        * Add to schema.
@@ -232,10 +232,25 @@ class PluginMysqlBuilder{
       }
     }
     /**
+     * Order by
+     */
+    $order_by = null;
+    if($criteria->get('order_by')){
+      foreach ($criteria->get('order_by') as $value) {
+        $v = new PluginWfArray($value);
+        $order_by .= ','.$v->get('field');
+        if($v->get('desc')){
+          $order_by .= ' desc';
+        }
+      }
+      $order_by = 'order by '.substr($order_by, 1);
+    }
+    /**
      * Replace
      */
     $str = str_replace('[fields]', substr($this->fields, 0, strlen($this->fields)-1), $str);
     $str = str_replace('[join]', $this->join, $str);
+    $str = str_replace('[order_by]', $order_by, $str);
     if($where){
       $str = str_replace('1=1', substr($where, 0, strlen($where)-5), $str);
     }else{
