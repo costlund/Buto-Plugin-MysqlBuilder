@@ -13,8 +13,8 @@ Set schema and table.
 ```
 wfPlugin::includeonce('mysql/builder');
 $builder = new PluginMysqlBuilder();
-$builder->set_schema('/_path_/_to_/_schema_/schema.yml');
-$builder->set_table('_table_name_');
+$builder->set_schema_file('/_path_/_to_/_schema_/schema.yml');
+$builder->set_table_name('_table_name_');
 ```
 
 ### PluginWfMysql
