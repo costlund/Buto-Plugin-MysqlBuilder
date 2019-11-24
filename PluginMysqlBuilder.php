@@ -132,6 +132,9 @@ class PluginMysqlBuilder{
     }
     return null;
   }
+  /**
+   * Sets $this->fields and $this->select.
+   */
   private function set_field($data){
     if(!$data->get('table_name_as')){
       foreach ($data->get('foreign_key/field') as $key => $value) {
@@ -219,6 +222,23 @@ class PluginMysqlBuilder{
       }
     }
     /**
+     * select_filter
+     */
+    if($criteria->get('select_filter')){
+      /**
+       * 
+       */
+      foreach ($this->select as $key => $value) {
+        if(!in_array($value, $criteria->get('select_filter'))){
+          $this->fields = str_replace($value.',', '', $this->fields);
+        }
+      }
+      /**
+       * 
+       */
+      $this->select = $criteria->get('select_filter');
+    }
+    /**
      * Where
      */
     $criteria_where = $criteria->get('where');
@@ -244,6 +264,15 @@ class PluginMysqlBuilder{
         }
       }
       $order_by = 'order by '.substr($order_by, 1);
+    }
+    /**
+     * Select extra.
+     */
+    if($criteria->get('select')){
+      foreach ($criteria->get('select') as $value) {
+        $this->fields .= $value['sql'].',';
+        $this->select[] = $value['label'];
+      }
     }
     /**
      * Replace

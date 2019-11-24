@@ -36,6 +36,31 @@ $mysql->execute($sql_select);
 $rs = $mysql->getOne();
 ```
 
+#### where
+```
+account.id:
+  value: _any_value_
+```
+#### order_by
+```
+-
+  field: account.email
+  desc: true
+```
+#### select
+Add extra select field.
+```
+-
+  sql: "(8) as extra_value"
+  label: extra value
+```
+#### select_filter
+Restrict fields. Useful to get low data usage.
+```
+- account.id
+- account.email
+```
+
 ### Insert
 Insert data.
 ```

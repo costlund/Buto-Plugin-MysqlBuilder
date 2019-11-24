@@ -1,5 +1,9 @@
-version: 1.1.0
+version: 1.2.0
 history:
+  1.2.0:
+    date: '2019-11-24'
+    title: 'Select filter and Select extra'
+    description: 'Restrict output from database by using select filter. Add extra select fields not in schema.'
   1.1.0:
     date: '2019-10-29'
     title: 'Order by'
