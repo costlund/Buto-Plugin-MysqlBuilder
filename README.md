@@ -29,7 +29,7 @@ $mysql->open($this->settings->get('_mysql_settings_'));
 Pass any params who are in schema to select from table. 
 ```
 $criteria = new PluginWfArray();
-$criteria->set('where/id', '_my_id_string_');
+$criteria->set('where/_table._id/value', '_my_id_string_');
 
 $sql_select = $builder->get_sql_select($criteria->get());
 $mysql->execute($sql_select);
