@@ -7,10 +7,14 @@ class PluginMysqlBuilder{
   public $table_data = null;
   private $fields = null;
   private $select = array();
+  private $select_separator = null;
   private $join = null;
   function __construct() {
     wfPlugin::includeonce('wf/array');
     wfPlugin::includeonce('wf/yml');
+  }
+  public function set_select_separator($select_separator){
+    $this->select_separator = $select_separator;
   }
   public function set_schema_file($schema_file){
     /**
@@ -291,6 +295,19 @@ class PluginMysqlBuilder{
     $sql->set('sql', $str);
     $sql->set('params', $params);
     $sql->set('select', $this->select);
+    /**
+     * Select separator
+     */
+    if($this->select_separator){
+      $temp = array();
+      foreach ($sql->get('select') as $key => $value) {
+        $temp[] = str_replace('.', $this->select_separator, $value);
+      }
+      $sql->set('select', $temp);
+    }
+    /**
+     * 
+     */
     return $sql->get();
   }
 }

@@ -61,6 +61,12 @@ Restrict fields. Useful to get low data usage.
 - account.email
 ```
 
+#### select_separator
+If using output as json one should replace dot separator to other character.
+```
+$builder->set_select_separator('_');
+```
+
 ### Insert
 Insert data.
 ```
