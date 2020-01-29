@@ -36,6 +36,20 @@ $mysql->execute($sql_select);
 $rs = $mysql->getOne();
 ```
 
+#### join
+```
+join:
+  -
+    field: customer_id
+```
+One could rename table name.
+```
+join:
+  -
+    field: customer_id
+    table_name_as: TEST
+```
+
 #### where
 ```
 account.id:
@@ -50,9 +64,10 @@ account.id:
 #### select
 Add extra select field.
 ```
--
-  sql: "(8) as extra_value"
-  label: extra value
+select:
+  -
+    sql: "(8) as extra_value"
+    label: extra value
 ```
 #### select_filter
 Restrict fields. Useful to get low data usage.
