@@ -73,8 +73,37 @@ class PluginMysqlBuilder{
         $values .= "?,";
       }
     }
+    /**
+     * Created by
+     * If exist in schema and not included.
+     */
+    if($this->table_data->get('field/created_by') && !isset($data['created_by'])){
+      $this->fields .= "created_by,";
+      $values .= "'[user_id]',";
+    }
+    /**
+     * 
+     */
     $str = str_replace('[fields]', substr($this->fields, 0, strlen($this->fields)-1), $str);
     $str = str_replace('[values]', substr($values, 0, strlen($values)-1), $str);
+    $sql->set('sql', $str);
+    foreach ($this->table_data->get('field') as $key => $value) {
+      if(isset($data[$key])){
+        $sql->set('params/', array('type' => $value['type'], 'value' => $data[$key]));
+      }
+    }
+    return $sql->get();
+  }
+  public function get_sql_delete($data){
+    $sql = new PluginWfArray();
+    $str = 'delete from '.$this->table_name.' where [where];';
+    $this->where = '';
+    foreach ($this->table_data->get('field') as $key => $value) {
+      if(isset($data[$key])){
+        $this->where .= "$key=? and ";
+      }
+    }
+    $str = str_replace('[where]', substr($this->where, 0, strlen($this->where)-5), $str);
     $sql->set('sql', $str);
     foreach ($this->table_data->get('field') as $key => $value) {
       if(isset($data[$key])){
