@@ -99,14 +99,14 @@ class PluginMysqlBuilder{
     $str = 'delete from '.$this->table_name.' where [where];';
     $this->where = '';
     foreach ($this->table_data->get('field') as $key => $value) {
-      if(isset($data[$key])){
+      if(array_key_exists($key, $data)){
         $this->where .= "$key=? and ";
       }
     }
     $str = str_replace('[where]', substr($this->where, 0, strlen($this->where)-5), $str);
     $sql->set('sql', $str);
     foreach ($this->table_data->get('field') as $key => $value) {
-      if(isset($data[$key])){
+      if(array_key_exists($key, $data)){
         $sql->set('params/', array('type' => $value['type'], 'value' => $data[$key]));
       }
     }
