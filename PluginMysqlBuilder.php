@@ -167,23 +167,35 @@ class PluginMysqlBuilder{
   }
   /**
    * Sets $this->fields and $this->select.
+   * @param PluginWfArray $data
+   * @return null
    */
-  private function set_field($data){
-    if(!$data->get('table_name_as')){
-      foreach ($data->get('foreign_key/field') as $key => $value) {
-        $i = new PluginWfArray($value);
-        $this->fields .= $data->get('foreign_key/reference_table').".$key,";
-        $this->select[] = $data->get('foreign_key/reference_table').'.'.$key;
-      }
-    }else{
-      foreach ($data->get('foreign_key/field') as $key => $value) {
-        $i = new PluginWfArray($value);
-        $this->fields .= $data->get('table_name_as').".$key,";
-        $this->select[] = $data->get('table_name_as').'.'.$key;
+  private function set_field($data, $join = false){
+    $join_prefix = null;
+    if($join){
+      $join_prefix = 'j_';
+    }
+    $table_name = $data->get('foreign_key/reference_table');
+    if($data->get('table_name_as')){
+      $table_name = $data->get('table_name_as');
+    }
+    foreach ($data->get('foreign_key/field') as $key => $value) {
+      $i = new PluginWfArray($value);
+      $this->fields .= $table_name.".$key,";
+      if(!$join){
+        $this->select[] = $key;
+      }else{
+        $this->select[] = $join_prefix.$table_name.'.'.$key;
       }
     }
     return null;
   }
+  /**
+   * Set $this->schema_data a copy of other table_name to handle when table_name_as is set.
+   * @param string $table_name_as
+   * @param string $table_name
+   * @return null
+   */
   private function add_to_schema($table_name_as, $table_name){
     /**
      * Add to schema.
@@ -217,6 +229,7 @@ class PluginMysqlBuilder{
     $temp->set('table_name_as', $this->table_name_as);
     $temp->set('foreign_key/field', $this->table_data->get('field'));
     $this->set_field($temp);
+    unset($temp);
     /**
      * Join
      */
@@ -229,7 +242,7 @@ class PluginMysqlBuilder{
         $i_1->set('foreign_key', $this->schema_data->get('tables/'.$i_1->get('table_name').'/field/'.$i_1->get('field').'/foreing_key'));
         $i_1->set('foreign_key/field', $this->schema_data->get('tables/'.$i_1->get('foreign_key/reference_table').'/field'));
         $this->set_join($i_1);
-        $this->set_field($i_1);
+        $this->set_field($i_1, true);
         if($i_1->get('join')){
           foreach ($i_1->get('join') as $value_2) {
             $i_2 = new PluginWfArray($value_2);
@@ -238,7 +251,7 @@ class PluginMysqlBuilder{
             $i_2->set('foreign_key', $this->schema_data->get('tables/'.$i_2->get('table_name').'/field/'.$i_2->get('field').'/foreing_key'));
             $i_2->set('foreign_key/field', $this->schema_data->get('tables/'.$i_2->get('foreign_key/reference_table').'/field'));
             $this->set_join($i_2);
-            $this->set_field($i_2);
+            $this->set_field($i_2, true);
             if($i_2->get('join')){
               foreach ($i_2->get('join') as $value_3) {
                 $i_3 = new PluginWfArray($value_3);
@@ -247,7 +260,7 @@ class PluginMysqlBuilder{
                 $i_3->set('foreign_key', $this->schema_data->get('tables/'.$i_3->get('table_name').'/field/'.$i_3->get('field').'/foreing_key'));
                 $i_3->set('foreign_key/field', $this->schema_data->get('tables/'.$i_3->get('foreign_key/reference_table').'/field'));
                 $this->set_join($i_3);
-                $this->set_field($i_3);
+                $this->set_field($i_3, true);
               }
             }
           }
