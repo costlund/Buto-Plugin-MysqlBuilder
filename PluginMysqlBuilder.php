@@ -291,10 +291,31 @@ class PluginMysqlBuilder{
     $where = null;
     if($criteria_where){
       foreach ($criteria_where as $key => $value){
+        $i = new PluginWfArray($value);
         $x = explode('.', $key);
         $temp = new PluginWfArray($this->schema_data->get('tables/'.$x[0].'/field/'.$x[1]  ));
-        $where .= "$key = ? and ";
-        $params[] = array('type' => $temp->get('type'), 'value' => $value['value']);
+        /**
+         * NOT
+         */
+        $not = null;
+        if($i->get('not')){
+          $not = 'NOT ';
+        }
+        /**
+         *
+         */
+        if(!$i->get('isnull')){
+          /**
+           * Normal where
+           */
+          $where .= "$not$key = ? and ";
+          $params[] = array('type' => $temp->get('type'), 'value' => $i->get('value'));
+        }else{
+          /**
+           * isnull
+           */
+          $where .= "isnull($key) and ";
+        }
       }
     }
     /**

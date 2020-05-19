@@ -1,5 +1,9 @@
-version: 1.3.0
+version: 1.4.0
 history:
+  1.4.0:
+    date: '2020-05-19'
+    title: Select params
+    description: Using NOT and isnull in select.
   1.3.0:
     date: '2020-03-01'
     title: 'Rebuild method set_field'
