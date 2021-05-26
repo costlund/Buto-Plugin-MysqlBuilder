@@ -1,5 +1,9 @@
-version: 1.4.0
+version: 1.5.0
 history:
+  1.5.0:
+    date: '2021-05-26'
+    title: 'Select filter'
+    description: 'Rebuild select filter procedure.'
   1.4.0:
     date: '2020-05-19'
     title: 'Select params'

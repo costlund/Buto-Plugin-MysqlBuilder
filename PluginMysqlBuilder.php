@@ -274,10 +274,9 @@ class PluginMysqlBuilder{
       /**
        * 
        */
-      foreach ($this->select as $key => $value) {
-        if(!in_array($value, $criteria->get('select_filter'))){
-          $this->fields = str_replace($value.',', '', $this->fields);
-        }
+      $this->fields = '';
+      foreach($criteria->get('select_filter') as $v){
+        $this->fields .= $v.',';
       }
       /**
        * 
