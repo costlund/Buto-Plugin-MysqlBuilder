@@ -10,6 +10,7 @@ $data = array('id' => '_my_id_string_', 'name' => '_a_name_')
 
 ### PluginMysqlBuilder
 Set schema and table.
+In method set_schema_file use an array for multiple files.
 ```
 wfPlugin::includeonce('mysql/builder');
 $builder = new PluginMysqlBuilder();
@@ -84,8 +85,9 @@ select:
 #### select_filter
 Restrict fields. Useful to get low data usage.
 ```
-- account.id
-- account.email
+select_filter:
+  - account.id
+  - account.email
 ```
 
 #### select_separator
