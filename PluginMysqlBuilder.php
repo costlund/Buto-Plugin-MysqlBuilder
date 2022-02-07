@@ -112,7 +112,13 @@ class PluginMysqlBuilder{
     }
     return $sql->get();
   }
-  public function get_sql_update($data){
+  /**
+   * SQL for update.
+   * @param array $data Critera field.
+   * @param array $function Tells whitch values are sql functions.
+   * @return array Sql criteria.
+   */
+  public function get_sql_update($data, $functions = array()){
     $sql = new PluginWfArray();
     $str = 'update '.$this->table_name.' set [fields] where [where];';
     $this->fields = '';
@@ -123,8 +129,12 @@ class PluginMysqlBuilder{
       $i = new PluginWfArray($value);
       if(isset($data[$key])){
         if(!$i->get('primary_key')){
-          $this->fields .= "$key=?,";
-          $this->fields_params[] = array('type' => $value['type'], 'value' => $data[$key]);
+          if(array_search($key, $functions)===false){
+            $this->fields .= "$key=?,";
+            $this->fields_params[] = array('type' => $value['type'], 'value' => $data[$key]);
+          }else{
+            $this->fields .= "$key=".$data[$key].",";
+          }
         }else{
           $where .= "$key=? and ";
           $where_params[] = array('type' => $value['type'], 'value' => $data[$key]);

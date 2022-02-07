@@ -1,5 +1,9 @@
-version: 1.5.1
+version: 1.6.0
 history:
+  1.6.0:
+    date: '2022-01-24'
+    title: 'SQL functions'
+    description: 'One could add sql function in method get_sql_update.'
   1.5.1:
     date: '2022-01-18'
     title: 'Readme'

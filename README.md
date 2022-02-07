@@ -1,24 +1,37 @@
 # Buto-Plugin-MysqlBuilder
 Methods to handle mysql queries with minimal of settings. Support select, insert and update. Uses schema file and a table name to handle data.
 
-## Usage
-Example.
-### Data
+
+<!-- ## Data
 ```
 $data = array('id' => '_my_id_string_', 'name' => '_a_name_')
-```
+``` -->
 
-### PluginMysqlBuilder
-Set schema and table.
-In method set_schema_file use an array for multiple files.
+
+## Object
 ```
 wfPlugin::includeonce('mysql/builder');
 $builder = new PluginMysqlBuilder();
+```
+
+## set_schema_file()
+Set schema.
+```
 $builder->set_schema_file('/_path_/_to_/_schema_/schema.yml');
+```
+Or for multiple schemas.
+```
+$builder->set_schema_file(array('/_path_/_to_/_schema_/schema.yml'));
+```
+
+## set_table_name()
+Set table.
+```
 $builder->set_table_name('_table_name_');
 ```
 
-### PluginWfMysql
+
+## PluginWfMysql, object
 Create object and open with your settings.
 ```
 wfPlugin::includeonce('wf/mysql');
@@ -26,7 +39,8 @@ $mysql = new PluginWfMysql();
 $mysql->open($this->settings->get('_mysql_settings_'));
 ```
 
-### Select
+
+## Critera
 Pass any params who are in schema to select from table. 
 ```
 $criteria = new PluginWfArray();
@@ -43,13 +57,23 @@ With isnull.
 ```
 $criteria->set('where/_table_.id/isnull', true);
 ```
+
+## get_sql_select()
 ```
 $sql_select = $builder->get_sql_select($criteria->get());
+```
+
+## PluginWfMysql, execute()
+
+```
 $mysql->execute($sql_select);
 $rs = $mysql->getOne();
 ```
 
-#### join
+
+## Settings
+
+### join
 ```
 join:
   -
@@ -63,18 +87,18 @@ join:
     table_name_as: TEST
 ```
 
-#### where
+### where
 ```
 account.id:
   value: _any_value_
 ```
-#### order_by
+### order_by
 ```
 -
   field: account.email
   desc: true
 ```
-#### select
+### select
 Add extra select field.
 ```
 select:
@@ -82,7 +106,7 @@ select:
     sql: "(8) as extra_value"
     label: extra value
 ```
-#### select_filter
+### select_filter
 Restrict fields. Useful to get low data usage.
 ```
 select_filter:
@@ -90,27 +114,45 @@ select_filter:
   - account.email
 ```
 
-#### select_separator
+### select_separator
 If using output as json one should replace dot separator to other character.
 ```
 $builder->set_select_separator('_');
 ```
 
-### Insert
+## get_sql_insert()
 Insert data.
 ```
 $sql_insert = $builder->get_sql_insert($data);
 $mysql->execute($sql_insert);
 ```
 
-### Update
-Update data.
+## get_sql_update()
+Uppdate database.
+
+### Description
 ```
 $sql_update = $builder->get_sql_update($data);
 $mysql->execute($sql_update);
 ```
+### Parameters
+- **data** - Criteria field
+- **functions(optional)** - Tells whitch values are sql functions.
 
-### Schema
+### Return values
+- **array** - Sql criteria.
+
+
+### Example
+Second param is if values are sql function. In this example param date is a function.
+```
+$sql_update = $builder->get_sql_update($data, array('date'));
+$mysql->execute($sql_update);
+```
+
+
+
+## Schema
 For this example a schema should look like this.
 ```
 tables:
