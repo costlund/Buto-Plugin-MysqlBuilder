@@ -1,5 +1,9 @@
-version: 1.6.0
+version: 1.7.0
 history:
+  1.7.0:
+    date: '2022-03-31'
+    title: 'Operator'
+    description: 'Add operator to be changed from =.'
   1.6.0:
     date: '2022-01-24'
     title: 'SQL functions'

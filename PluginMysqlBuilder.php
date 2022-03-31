@@ -311,13 +311,20 @@ class PluginMysqlBuilder{
           $not = 'NOT ';
         }
         /**
+         * Operator
+         */
+        $operator = "=";
+        if($i->get('operator')){
+          $operator = $i->get('operator');
+        }
+        /**
          *
          */
         if(!$i->get('isnull')){
           /**
            * Normal where
            */
-          $where .= "$not$key = ? and ";
+          $where .= "$not$key $operator ? and ";
           $params[] = array('type' => $temp->get('type'), 'value' => $i->get('value'));
         }else{
           /**

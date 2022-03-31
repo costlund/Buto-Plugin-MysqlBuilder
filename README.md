@@ -58,6 +58,12 @@ With isnull.
 $criteria->set('where/_table_.id/isnull', true);
 ```
 
+### Operator
+Default operator is = but can be changed.
+```
+$criteria->set('where/_table_.id/operator', ">=");
+```
+
 ## get_sql_select()
 ```
 $sql_select = $builder->get_sql_select($criteria->get());
