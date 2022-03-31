@@ -8,7 +8,7 @@ class PluginMysqlBuilder{
   private $fields = null;
   private $select = array();
   private $select_separator = null;
-  private $join = null;
+  private $join = '';
   function __construct() {
     wfPlugin::includeonce('wf/array');
     wfPlugin::includeonce('wf/yml');
@@ -243,7 +243,7 @@ class PluginMysqlBuilder{
     /**
      * Join
      */
-    $this->join = null;
+    $this->join = '';
     if($criteria->get('join')){
       foreach ($criteria->get('join') as $value_1) {
         $i_1 = new PluginWfArray($value_1);
