@@ -1,5 +1,9 @@
-version: 1.7.1
+version: 1.8.0
 history:
+  1.8.0:
+    date: '2022-09-14'
+    title: Order by value
+    description: 'One could order by value.'
   1.7.1:
     date: '2022-06-07'
     title: Versions

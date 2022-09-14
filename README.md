@@ -104,6 +104,11 @@ account.id:
   field: account.email
   desc: true
 ```
+#### value
+One could add param value to order by value.
+```
+  value: 'world'
+```
 ### select
 Add extra select field.
 ```

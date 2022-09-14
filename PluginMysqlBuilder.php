@@ -341,7 +341,11 @@ class PluginMysqlBuilder{
     if($criteria->get('order_by')){
       foreach ($criteria->get('order_by') as $value) {
         $v = new PluginWfArray($value);
-        $order_by .= ','.$v->get('field');
+        if(!$v->get('value')){
+          $order_by .= ','.$v->get('field');
+        }else{
+          $order_by .= ','.$v->get('field')."='".$v->get('value')."'";
+        }
         if($v->get('desc')){
           $order_by .= ' desc';
         }
