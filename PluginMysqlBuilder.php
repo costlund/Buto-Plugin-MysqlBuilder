@@ -84,8 +84,8 @@ class PluginMysqlBuilder{
     /**
      * 
      */
-    $str = str_replace('[fields]', substr($this->fields, 0, strlen($this->fields)-1), $str);
-    $str = str_replace('[values]', substr($values, 0, strlen($values)-1), $str);
+    $str = wfPhpfunc::str_replace('[fields]', wfPhpfunc::substr($this->fields, 0, wfPhpfunc::strlen($this->fields)-1), $str);
+    $str = wfPhpfunc::str_replace('[values]', wfPhpfunc::substr($values, 0, wfPhpfunc::strlen($values)-1), $str);
     $sql->set('sql', $str);
     foreach ($this->table_data->get('field') as $key => $value) {
       if(isset($data[$key])){
@@ -103,7 +103,7 @@ class PluginMysqlBuilder{
         $this->where .= "$key=? and ";
       }
     }
-    $str = str_replace('[where]', substr($this->where, 0, strlen($this->where)-5), $str);
+    $str = wfPhpfunc::str_replace('[where]', wfPhpfunc::substr($this->where, 0, wfPhpfunc::strlen($this->where)-5), $str);
     $sql->set('sql', $str);
     foreach ($this->table_data->get('field') as $key => $value) {
       if(array_key_exists($key, $data)){
@@ -141,8 +141,8 @@ class PluginMysqlBuilder{
         }
       }
     }
-    $str = str_replace('[fields]', substr($this->fields, 0, strlen($this->fields)-1), $str);
-    $str = str_replace('[where]', substr($where, 0, strlen($where)-5), $str);
+    $str = wfPhpfunc::str_replace('[fields]', wfPhpfunc::substr($this->fields, 0, wfPhpfunc::strlen($this->fields)-1), $str);
+    $str = wfPhpfunc::str_replace('[where]', wfPhpfunc::substr($where, 0, wfPhpfunc::strlen($where)-5), $str);
     $sql->set('sql', $str);
     $sql->set('params', array_merge($this->fields_params, $where_params));
     return $sql->get();
@@ -364,13 +364,13 @@ class PluginMysqlBuilder{
     /**
      * Replace
      */
-    $str = str_replace('[fields]', substr($this->fields, 0, strlen($this->fields)-1), $str);
-    $str = str_replace('[join]', $this->join, $str);
-    $str = str_replace('[order_by]', $order_by, $str);
+    $str = wfPhpfunc::str_replace('[fields]', wfPhpfunc::substr($this->fields, 0, wfPhpfunc::strlen($this->fields)-1), $str);
+    $str = wfPhpfunc::str_replace('[join]', $this->join, $str);
+    $str = wfPhpfunc::str_replace('[order_by]', $order_by, $str);
     if($where){
-      $str = str_replace('1=1', substr($where, 0, strlen($where)-5), $str);
+      $str = wfPhpfunc::str_replace('1=1', wfPhpfunc::substr($where, 0, wfPhpfunc::strlen($where)-5), $str);
     }else{
-      $str = str_replace('where 1=1', '', $str);
+      $str = wfPhpfunc::str_replace('where 1=1', '', $str);
     }
     /**
      * Set data
@@ -384,7 +384,7 @@ class PluginMysqlBuilder{
     if($this->select_separator){
       $temp = array();
       foreach ($sql->get('select') as $key => $value) {
-        $temp[] = str_replace('.', $this->select_separator, $value);
+        $temp[] = wfPhpfunc::str_replace('.', $this->select_separator, $value);
       }
       $sql->set('select', $temp);
     }
