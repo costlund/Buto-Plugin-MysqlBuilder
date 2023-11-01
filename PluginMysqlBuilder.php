@@ -6,6 +6,8 @@ class PluginMysqlBuilder{
   public $table_name_as = null;
   public $table_data = null;
   private $fields = null;
+  private $fields_params = array();
+  private $where = null;
   private $select = array();
   private $select_separator = null;
   private $join = '';
